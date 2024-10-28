@@ -60,9 +60,9 @@ struct Ball {
 
 // I want a reset state to allow a small pause before play starts
 enum PongState {
-    PLAY,
-    PAUSE,
-    RESET
+    PLAY = 0,
+    PAUSE = 1,
+    RESET = 2
 };
 
 class Pong final : public psyqo::Application {
@@ -80,6 +80,11 @@ class Pong final : public psyqo::Application {
 class PongScene final : public psyqo::Scene {
     void frame() override;
     void printScores();
+
+    // Execute each state
+    void playStateFrame();
+    void pauseStateFrame();
+    void resetStateFrame();
 
     public:
     Player p1;
@@ -137,11 +142,7 @@ void Pong::createScene() {
 void PongScene::frame() {
     pong.gpu().clear(this->bg);
 
-    psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};
-    pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
-
-
-    p1.getInput(psyqo::SimplePad::Pad1);
+    psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};    
 
     // If game is in play...
     // check for collisions, goals scored, update graphics
@@ -162,14 +163,40 @@ void PongScene::frame() {
     // RESET - Small stoppage in between points scored or at the start of a game
     switch (curr_state) {
         case PongState::PLAY:
+            this->playStateFrame();
             break;
         case PongState::PAUSE:
+            this->pauseStateFrame();
             break;
         case PongState::RESET:
+            this->resetStateFrame();
             break;
         default:
             break;
     }
+}
+
+void PongScene::playStateFrame() {
+    // regular gameplay loop
+
+    p1.getInput(psyqo::SimplePad::Pad1);
+}
+
+void PongScene::pauseStateFrame() {
+    // stop all movement and only allow unpause input 
+
+    pong.m_font.print(pong.gpu(), "PAUSED - Press 'O' to unpause", {{.x = 16, .y = 200}}, WHITE);
+
+    if (pong.m_pad.isButtonPressed(psyqo::SimplePad::Pad1, psyqo::SimplePad::Button::Circle)) {
+        this->curr_state = PongState::PLAY;
+    }
+}
+
+void PongScene::resetStateFrame() {
+    // pause for a lil before letting gameplay resume after a goal
+
+    // For now just setting it to play mode until I can implement the delayed start
+    this->curr_state = PongState::PLAY;
 }
 
 void PongScene::printScores() {
@@ -181,6 +208,8 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
     if (this->is_human_controlled){ 
         if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
             // Pause the game, I.e. set current state to pause
+
+            pongScene.curr_state = PongState::PAUSE;
         }
 
         if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up)) {
