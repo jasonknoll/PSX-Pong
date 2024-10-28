@@ -11,12 +11,16 @@
 #define P1_X_POS_INIT 10
 #define P1_Y_POS_INIT 115
 
+#define P2_X_POS_INIT 310
+#define P2_Y_POS_INIT 115
+
 #define PADDLE_WIDTH 2
-#define PADDLE_HEIGHT 10
+#define PADDLE_HEIGHT 15
 
 
 struct Player {
 
+    void getInput(psyqo::SimplePad::Pad pad);
     void move();
 
     int16_t x;
@@ -72,6 +76,8 @@ class PongScene final : public psyqo::Scene {
     Player p2;
 
     PongState curr_state;
+
+    psyqo::Color bg {{.r = 0, .g = 0, .b = 0}};
 };
 
 
@@ -96,24 +102,28 @@ void Pong::createScene() {
 
     // TODO set player init positions
     pongScene.p1.paddle.position = {{ .x = P1_X_POS_INIT, .y = P1_Y_POS_INIT }};
-
     pongScene.p1.paddle.size = {{ .w = PADDLE_WIDTH, .h = PADDLE_HEIGHT }};
-
     pongScene.p1.color = {{ .r = 0, .g = 255, .b = 0 }};
-
     pongScene.p1.paddle.setColor(pongScene.p1.color);
+    pongScene.p1.is_human_controlled = true;
+
+    pongScene.p2.paddle.position = {{ .x = P2_X_POS_INIT, .y = P2_Y_POS_INIT }};
+    pongScene.p2.paddle.size = {{ .w = PADDLE_WIDTH, .h = PADDLE_HEIGHT }};
+    pongScene.p2.color = {{ .r = 0, .g = 255, .b = 0 }};
+    pongScene.p2.paddle.setColor(pongScene.p2.color);
+    pongScene.p1.is_human_controlled = true; // NOTE need to add p2 AI player
 
     pushScene(&pongScene);
 }
 
 void PongScene::frame() {
+    pong.gpu().clear(this->bg);
+
     psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};
     pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
 
     // TODO get player input
-    if (pong.m_pad.isButtonPressed(psyqo::SimplePad::Pad1, psyqo::SimplePad::Button::Start)) {
-        // Pause the game, I.e. set current state to pause
-    }
+    p1.getInput(psyqo::SimplePad::Pad1);
 
     // If game is in play...
 
@@ -122,6 +132,17 @@ void PongScene::frame() {
     // if ball is scored...
 
     pong.gpu().sendPrimitive(p1.paddle);
+    pong.gpu().sendPrimitive(p2.paddle);
+}
+
+void Player::getInput(psyqo::SimplePad::Pad pad) {
+    if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
+        // Pause the game, I.e. set current state to pause
+    }
+
+    if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up)) {
+        this->paddle.position.y -= 1;
+    }
 }
 
 // TODO Create players
