@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include "psyqo/primitives/common.hh"
 #include "third_party/nugget/common/syscalls/syscalls.h"
 #include "third_party/nugget/psyqo/application.hh"
 #include "third_party/nugget/psyqo/font.hh"
@@ -7,8 +8,22 @@
 #include "third_party/nugget/psyqo/scene.hh"
 
 
-// A PSYQo software needs to declare one \`Application\` object.
-// This is the one we're going to do for our hello world.
+struct Player {
+
+    void draw();
+
+    int16_t x;
+    int16_t y;
+
+    psyqo::Color color;
+
+    bool is_player_controlled;
+};
+
+struct Ball {
+
+};
+
 class Pong final : public psyqo::Application {
 
     void prepare() override;
@@ -16,15 +31,17 @@ class Pong final : public psyqo::Application {
 
   public:
     psyqo::Font<> m_font;
+
+    Player p1;
+    Player p2;
 };
 
-// And we need at least one scene to be created.
-// This is the one we're going to do for our hello world.
+
 class PongScene final : public psyqo::Scene {
     void frame() override;
 };
 
-// We're instantiating the two objects above right now.
+
 Pong pong;
 PongScene pongScene;
 
@@ -47,5 +64,14 @@ void PongScene::frame() {
     psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};
     pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
 }
+
+// TODO Create players
+// TODO Set P1 and P2 controls
+// TODO Draw players
+// TODO Create ball
+// TODO Draw & move ball
+// TODO Set ball collisions with paddles
+// TODO Add scoring/reset mechanic
+// TODO Draw score
 
 int main() { return pong.run(); }
