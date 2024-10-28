@@ -24,10 +24,13 @@ struct Player {
 
     void getInput(psyqo::SimplePad::Pad pad);
     void move();
+    void scorePoint();
 
     int16_t x;
     int16_t y;
     int16_t y_dir;
+
+    short score;
 
     psyqo::Color color;
 
@@ -128,10 +131,13 @@ void PongScene::frame() {
     p1.getInput(psyqo::SimplePad::Pad1);
 
     // If game is in play...
+    // check for collisions, goals scored
 
     // if paused...
+    // display pause message, disable controls
     
     // if ball is scored...
+    // add point to scorer, initiate reset
 
     pong.gpu().sendPrimitive(p1.paddle);
     pong.gpu().sendPrimitive(p2.paddle);
@@ -150,6 +156,10 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
         }
     }
 }
+
+void Player::scorePoint() {
+    this->score++;
+}
     
 // TODO Create players
 // TODO Set P1 and P2 controls
@@ -159,5 +169,6 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
 // TODO Set ball collisions with paddles
 // TODO Add scoring/reset mechanic
 // TODO Draw score
+// TODO add menu screen to select 1 or two players (default to 2 for now)
 
 int main() { return pong.run(); }
