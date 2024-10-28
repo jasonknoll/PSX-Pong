@@ -131,6 +131,7 @@ void Pong::createScene() {
     pongScene.ball.shape.setColor(pongScene.ball.color);
 
     pushScene(&pongScene);
+    // pushScene(&menuScene); // when I create a main menu
 }
 
 void PongScene::frame() {
@@ -143,7 +144,17 @@ void PongScene::frame() {
     p1.getInput(psyqo::SimplePad::Pad1);
 
     // If game is in play...
-    // check for collisions, goals scored
+    // check for collisions, goals scored, update graphics
+    switch (curr_state) {
+        case PongState::PLAY:
+            break;
+        case PongState::PAUSE:
+            break;
+        case PongState::RESET:
+            break;
+        default:
+            break;
+    }
 
     // if paused...
     // display pause message, disable controls
@@ -152,7 +163,7 @@ void PongScene::frame() {
     // add point to scorer, initiate reset
 
     pong.gpu().sendPrimitive(ball.shape);
-    pong.gpu().sendPrimitive(p1.paddle);
+    pong.gpu().sendPrimitive(p1.paddle); 
     pong.gpu().sendPrimitive(p2.paddle);
 }
 
@@ -175,6 +186,7 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
     }
 }
 
+// probably unnecessary
 void Player::scorePoint() {
     this->score++;
 }
