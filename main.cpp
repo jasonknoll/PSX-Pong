@@ -22,11 +22,6 @@ class Pong final : public psyqo::Application {
 // This is the one we're going to do for our hello world.
 class PongScene final : public psyqo::Scene {
     void frame() override;
-
-    // We'll have some simple animation going on, so we
-    // need to keep track of our state here.
-    uint8_t m_anim = 0;
-    bool m_direction = true;
 };
 
 // We're instantiating the two objects above right now.
