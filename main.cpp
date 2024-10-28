@@ -80,6 +80,16 @@ void Pong::createScene() {
 void PongScene::frame() {
     psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};
     pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
+
+    // TODO get player input
+
+    // If game is in play...
+
+    // if paused...
+    
+    // if ball is scored...
+
+    // p1.draw();
 }
 
 // TODO Create players
