@@ -18,7 +18,7 @@ struct Player {
 
     psyqo::Color color;
 
-    bool is_player_controlled;
+    bool is_human_controlled;
 };
 
 struct Ball {
@@ -46,14 +46,16 @@ class Pong final : public psyqo::Application {
 
   public:
     psyqo::Font<> m_font;
-
-    Player p1;
-    Player p2;
 };
 
 
 class PongScene final : public psyqo::Scene {
     void frame() override;
+
+    Player p1;
+    Player p2;
+
+    PongState curr_state;
 };
 
 
