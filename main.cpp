@@ -1,13 +1,18 @@
 #include <stdint.h>
 
 #include "psyqo/primitives/common.hh"
-#include "third_party/nugget/common/syscalls/syscalls.h"
 #include "third_party/nugget/psyqo/application.hh"
 #include "third_party/nugget/psyqo/font.hh"
 #include "third_party/nugget/psyqo/gpu.hh"
 #include "third_party/nugget/psyqo/scene.hh"
 #include "third_party/nugget/psyqo/primitives/rectangles.hh"
 #include "psyqo/simplepad.hh"
+
+#define P1_X_POS_INIT 10
+#define P1_Y_POS_INIT 115
+
+#define PADDLE_WIDTH 2
+#define PADDLE_HEIGHT 10
 
 
 struct Player {
@@ -17,9 +22,6 @@ struct Player {
     int16_t x;
     int16_t y;
     int16_t y_dir;
-
-    int16_t x_starting_pos;
-    int16_t y_starting_pos;
 
     psyqo::Color color;
 
@@ -65,6 +67,7 @@ class Pong final : public psyqo::Application {
 class PongScene final : public psyqo::Scene {
     void frame() override;
 
+    public:
     Player p1;
     Player p2;
 
@@ -85,10 +88,20 @@ void Pong::prepare() {
     gpu().initialize(config);
 }
 
+// Called once specifically for the root scene
 void Pong::createScene() {
     m_font.uploadSystemFont(gpu());
     
     m_pad.initialize();
+
+    // TODO set player init positions
+    pongScene.p1.paddle.position = {{ .x = P1_X_POS_INIT, .y = P1_Y_POS_INIT }};
+
+    pongScene.p1.paddle.size = {{ .w = PADDLE_WIDTH, .h = PADDLE_HEIGHT }};
+
+    pongScene.p1.color = {{ .r = 0, .g = 255, .b = 0 }};
+
+    pongScene.p1.paddle.setColor(pongScene.p1.color);
 
     pushScene(&pongScene);
 }
@@ -108,7 +121,7 @@ void PongScene::frame() {
     
     // if ball is scored...
 
-    // pong.gpu().sendPrimitive(p1.paddle);
+    pong.gpu().sendPrimitive(p1.paddle);
 }
 
 // TODO Create players
