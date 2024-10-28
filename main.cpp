@@ -8,6 +8,8 @@
 #include "third_party/nugget/psyqo/primitives/rectangles.hh"
 #include "psyqo/simplepad.hh"
 
+
+
 #define P1_X_POS_INIT 10
 #define P1_Y_POS_INIT 115
 
@@ -136,15 +138,19 @@ void PongScene::frame() {
 }
 
 void Player::getInput(psyqo::SimplePad::Pad pad) {
-    if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
-        // Pause the game, I.e. set current state to pause
-    }
+    if (this->is_human_controlled){ 
+        if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
+            // Pause the game, I.e. set current state to pause
+        }
 
-    if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up)) {
-        this->paddle.position.y -= 1;
+        if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up)) {
+            this->paddle.position.y -= 1;
+        } else if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Down)) {
+            this->paddle.position.y += 1;
+        }
     }
 }
-
+    
 // TODO Create players
 // TODO Set P1 and P2 controls
 // TODO Draw players
