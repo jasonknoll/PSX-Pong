@@ -11,6 +11,7 @@
 struct Player {
 
     void draw();
+    void move();
 
     int16_t x;
     int16_t y;
@@ -21,6 +22,17 @@ struct Player {
 };
 
 struct Ball {
+
+    void draw();
+
+    int16_t x;
+    int16_t y;
+
+    psyqo::Color color;
+
+};
+
+enum PongState {
 
 };
 
