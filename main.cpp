@@ -32,8 +32,11 @@ struct Ball {
 
 };
 
+// I want a reset state to allow a small pause before play starts
 enum PongState {
-
+    PLAY,
+    PAUSE,
+    RESET
 };
 
 class Pong final : public psyqo::Application {
