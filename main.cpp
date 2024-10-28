@@ -140,11 +140,26 @@ void PongScene::frame() {
     psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};
     pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
 
-    // TODO get player input
+
     p1.getInput(psyqo::SimplePad::Pad1);
 
     // If game is in play...
     // check for collisions, goals scored, update graphics
+    
+    // if paused...
+    // display pause message, disable controls
+    
+    // if ball is scored...
+    // add point to scorer, initiate reset
+
+    pong.gpu().sendPrimitive(ball.shape);
+    pong.gpu().sendPrimitive(p1.paddle); 
+    pong.gpu().sendPrimitive(p2.paddle);
+
+    // TODO New function for each state? 
+    // PLAY - Game is in normal-play mode
+    // PAUSE - Player pressed start button and gameplay is paused
+    // RESET - Small stoppage in between points scored or at the start of a game
     switch (curr_state) {
         case PongState::PLAY:
             break;
@@ -155,16 +170,6 @@ void PongScene::frame() {
         default:
             break;
     }
-
-    // if paused...
-    // display pause message, disable controls
-    
-    // if ball is scored...
-    // add point to scorer, initiate reset
-
-    pong.gpu().sendPrimitive(ball.shape);
-    pong.gpu().sendPrimitive(p1.paddle); 
-    pong.gpu().sendPrimitive(p2.paddle);
 }
 
 void PongScene::printScores() {
