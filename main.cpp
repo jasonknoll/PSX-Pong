@@ -6,28 +6,38 @@
 #include "third_party/nugget/psyqo/font.hh"
 #include "third_party/nugget/psyqo/gpu.hh"
 #include "third_party/nugget/psyqo/scene.hh"
+#include "third_party/nugget/psyqo/primitives/rectangles.hh"
 #include "psyqo/simplepad.hh"
 
 
 struct Player {
 
-    void draw();
     void move();
 
     int16_t x;
     int16_t y;
+    int16_t y_dir;
+
+    int16_t x_starting_pos;
+    int16_t y_starting_pos;
 
     psyqo::Color color;
+
+    // What gets rendered to the screen
+    psyqo::Prim::Rectangle paddle;
 
     bool is_human_controlled;
 };
 
 struct Ball {
 
-    void draw();
+    void move();
 
     int16_t x;
+    int16_t x_dir;
+
     int16_t y;
+    int16_t y_dir;
 
     psyqo::Color color;
 
@@ -98,7 +108,7 @@ void PongScene::frame() {
     
     // if ball is scored...
 
-    // p1.draw();
+    // pong.gpu().sendPrimitive(p1.paddle);
 }
 
 // TODO Create players
