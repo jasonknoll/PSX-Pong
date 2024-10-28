@@ -6,6 +6,7 @@
 #include "third_party/nugget/psyqo/font.hh"
 #include "third_party/nugget/psyqo/gpu.hh"
 #include "third_party/nugget/psyqo/scene.hh"
+#include "psyqo/simplepad.hh"
 
 
 struct Player {
@@ -46,6 +47,8 @@ class Pong final : public psyqo::Application {
 
   public:
     psyqo::Font<> m_font;
+
+    psyqo::SimplePad m_pad;
 };
 
 
@@ -74,6 +77,9 @@ void Pong::prepare() {
 
 void Pong::createScene() {
     m_font.uploadSystemFont(gpu());
+    
+    m_pad.initialize();
+
     pushScene(&pongScene);
 }
 
@@ -82,6 +88,9 @@ void PongScene::frame() {
     pong.m_font.print(pong.gpu(), "Hello World!", {{.x = 16, .y = 32}}, c);
 
     // TODO get player input
+    if (pong.m_pad.isButtonPressed(psyqo::SimplePad::Pad1, psyqo::SimplePad::Button::Start)) {
+        // Pause the game, I.e. set current state to pause
+    }
 
     // If game is in play...
 
