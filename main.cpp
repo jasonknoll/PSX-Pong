@@ -19,6 +19,8 @@
 #define PADDLE_WIDTH 2
 #define PADDLE_HEIGHT 15
 
+#define WHITE {{.r = 255, .g = 255, .b = 255}}
+
 
 struct Player {
 
@@ -52,6 +54,8 @@ struct Ball {
 
     psyqo::Color color;
 
+    psyqo::Prim::Rectangle shape;
+
 };
 
 // I want a reset state to allow a small pause before play starts
@@ -75,12 +79,16 @@ class Pong final : public psyqo::Application {
 
 class PongScene final : public psyqo::Scene {
     void frame() override;
+    void printScores();
 
     public:
     Player p1;
     Player p2;
 
-    PongState curr_state;
+    Ball ball;
+
+    // init to a reset sequence (kickoff/serve)
+    PongState curr_state = PongState::RESET;
 
     psyqo::Color bg {{.r = 0, .g = 0, .b = 0}};
 };
@@ -105,7 +113,6 @@ void Pong::createScene() {
     
     m_pad.initialize();
 
-    // TODO set player init positions
     pongScene.p1.paddle.position = {{ .x = P1_X_POS_INIT, .y = P1_Y_POS_INIT }};
     pongScene.p1.paddle.size = {{ .w = PADDLE_WIDTH, .h = PADDLE_HEIGHT }};
     pongScene.p1.color = {{ .r = 0, .g = 255, .b = 0 }};
@@ -117,6 +124,11 @@ void Pong::createScene() {
     pongScene.p2.color = {{ .r = 0, .g = 255, .b = 0 }};
     pongScene.p2.paddle.setColor(pongScene.p2.color);
     pongScene.p1.is_human_controlled = true; // NOTE need to add p2 AI player
+
+    pongScene.ball.shape.position = {{.x = 320 / 2, .y = 240/2}};
+    pongScene.ball.shape.size = {{ .w = 2, .h = 2}};
+    pongScene.ball.color = {{.r = 255, .g = 255, .b = 255}};
+    pongScene.ball.shape.setColor(pongScene.ball.color);
 
     pushScene(&pongScene);
 }
@@ -139,8 +151,14 @@ void PongScene::frame() {
     // if ball is scored...
     // add point to scorer, initiate reset
 
+    pong.gpu().sendPrimitive(ball.shape);
     pong.gpu().sendPrimitive(p1.paddle);
     pong.gpu().sendPrimitive(p2.paddle);
+}
+
+void PongScene::printScores() {
+    psyqo::Color score_color = WHITE;
+    pong.m_font.print(pong.gpu(), "<SCORE HERE>", {{.x = 16, .y = 32}}, score_color);
 }
 
 void Player::getInput(psyqo::SimplePad::Pad pad) {
@@ -169,6 +187,6 @@ void Player::scorePoint() {
 // TODO Set ball collisions with paddles
 // TODO Add scoring/reset mechanic
 // TODO Draw score
-// TODO add menu screen to select 1 or two players (default to 2 for now)
+// TODO Add menu screen to select 1 or two players (default to 2 for now)
 
 int main() { return pong.run(); }
