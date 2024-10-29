@@ -20,6 +20,7 @@
 #define PADDLE_HEIGHT 15
 
 #define WHITE {{.r = 255, .g = 255, .b = 255}}
+#define BLACK {{.r = 0, .g = 0, .b = 0}}
 
 
 struct Player {
@@ -28,8 +29,7 @@ struct Player {
     void move();
     void scorePoint();
 
-    int16_t x;
-    int16_t y;
+
     int16_t y_dir;
 
     short score;
@@ -44,12 +44,12 @@ struct Player {
 
 struct Ball {
 
+    void checkPaddleCollision();
+    void checkEdge();
     void move();
 
-    int16_t x;
     int16_t x_dir;
 
-    int16_t y;
     int16_t y_dir;
 
     psyqo::Color color;
@@ -95,12 +95,14 @@ class PongScene final : public psyqo::Scene {
     // init to a reset sequence (kickoff/serve)
     PongState curr_state = PongState::RESET;
 
-    psyqo::Color bg {{.r = 0, .g = 0, .b = 0}};
+    psyqo::Color bg BLACK;
 };
 
 
 Pong pong;
 PongScene pongScene;
+
+Ball ball;
 
 
 void Pong::prepare() {
@@ -142,7 +144,7 @@ void Pong::createScene() {
 void PongScene::frame() {
     pong.gpu().clear(this->bg);
 
-    psyqo::Color c = {{.r = 255, .g = 255, .b = 255}};    
+    psyqo::Color c = WHITE;    
 
     // If game is in play...
     // check for collisions, goals scored, update graphics
@@ -157,10 +159,7 @@ void PongScene::frame() {
     pong.gpu().sendPrimitive(p1.paddle); 
     pong.gpu().sendPrimitive(p2.paddle);
 
-    // TODO New function for each state? 
-    // PLAY - Game is in normal-play mode
-    // PAUSE - Player pressed start button and gameplay is paused
-    // RESET - Small stoppage in between points scored or at the start of a game
+
     switch (curr_state) {
         case PongState::PLAY:
             this->playStateFrame();
@@ -179,6 +178,11 @@ void PongScene::frame() {
 void PongScene::playStateFrame() {
     // regular gameplay loop
 
+
+    ball.move();
+
+    ball.checkPaddleCollision();
+
     p1.getInput(psyqo::SimplePad::Pad1);
 }
 
@@ -193,7 +197,7 @@ void PongScene::pauseStateFrame() {
 }
 
 void PongScene::resetStateFrame() {
-    // pause for a lil before letting gameplay resume after a goal
+    // TODO pause for a lil before letting gameplay resume after a goal
 
     // For now just setting it to play mode until I can implement the delayed start
     this->curr_state = PongState::PLAY;
@@ -223,6 +227,19 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
 // probably unnecessary
 void Player::scorePoint() {
     this->score++;
+}
+
+void Ball::checkEdge() {
+    // TODO 
+}
+
+void Ball::checkPaddleCollision() {
+    // TODO 
+}
+
+void Ball::move() {
+    this->shape.position.x += x_dir;
+    this->shape.position.y += y_dir;
 }
     
 // TODO Create players
