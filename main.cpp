@@ -178,6 +178,10 @@ void PongScene::frame() {
 void PongScene::playStateFrame() {
     // regular gameplay loop
 
+    // Need to experiment as speed would be framerate dependant here
+    // TODO make speed frame independant
+    ball.x_dir = 1;
+    ball.y_dir = 1;
 
     ball.move();
 
@@ -189,7 +193,7 @@ void PongScene::playStateFrame() {
 void PongScene::pauseStateFrame() {
     // stop all movement and only allow unpause input 
 
-    pong.m_font.print(pong.gpu(), "PAUSED - Press 'O' to unpause", {{.x = 16, .y = 200}}, WHITE);
+    pong.m_font.print(pong.gpu(), "PAUSED - Press 'Circle' to unpause", {{.x = 16, .y = 200}}, WHITE);
 
     if (pong.m_pad.isButtonPressed(psyqo::SimplePad::Pad1, psyqo::SimplePad::Button::Circle)) {
         this->curr_state = PongState::PLAY;
