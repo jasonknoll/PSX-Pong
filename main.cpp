@@ -9,6 +9,9 @@
 #include "psyqo/simplepad.hh"
 
 
+// For 320p
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
 #define P1_X_POS_INIT 10
 #define P1_Y_POS_INIT 115
@@ -181,11 +184,13 @@ void PongScene::playStateFrame() {
     // Need to experiment as speed would be framerate dependant here
     // TODO make speed frame independant
     ball.x_dir = 1;
-    ball.y_dir = 1;
+    ball.y_dir = 0;
 
-    ball.move();
+    ball.checkEdge();
 
     ball.checkPaddleCollision();
+
+    ball.move();
 
     p1.getInput(psyqo::SimplePad::Pad1);
 }
@@ -220,9 +225,9 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
             pongScene.curr_state = PongState::PAUSE;
         }
 
-        if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up)) {
+        if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Up) && this->paddle.position.y >= 0) {
             this->paddle.position.y -= 1;
-        } else if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Down)) {
+        } else if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Down) && this->paddle.position.y <= SCREEN_HEIGHT - 10) {
             this->paddle.position.y += 1;
         }
     }
@@ -234,7 +239,15 @@ void Player::scorePoint() {
 }
 
 void Ball::checkEdge() {
-    // TODO 
+    // ERROR ball seems to get stuck on screen edges infinitely flipping it's direction
+
+    if (this->shape.position.x <= 0 || this->shape.position.x >= SCREEN_WIDTH) {
+        this->x_dir = -this->x_dir;
+    }
+
+    if (this->shape.position.y <= 0 || this->shape.position.y >= SCREEN_HEIGHT) {
+        this->y_dir = -this->y_dir;
+    }
 }
 
 void Ball::checkPaddleCollision() {
