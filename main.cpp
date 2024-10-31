@@ -266,6 +266,10 @@ void Ball::move() {
     this->shape.position.x += x_dir;
     this->shape.position.y += y_dir;
 }
+
+void Ball::debugPrintPosition() {
+    // TODO print the ball's parameters
+}
     
 // TODO Create players
 // TODO Set P1 and P2 controls
