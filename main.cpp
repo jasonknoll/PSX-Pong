@@ -50,6 +50,7 @@ struct Ball {
     void checkPaddleCollision();
     void checkEdge();
     void move();
+    void debugPrintPosition(); // TODO
 
     int16_t x_dir;
 
@@ -183,7 +184,7 @@ void PongScene::playStateFrame() {
 
     // Need to experiment as speed would be framerate dependant here
     // TODO make speed frame independant
-    ball.x_dir = 1;
+    ball.x_dir = -1;
     ball.y_dir = 0;
 
     ball.checkEdge();
@@ -219,6 +220,7 @@ void PongScene::printScores() {
 
 void Player::getInput(psyqo::SimplePad::Pad pad) {
     if (this->is_human_controlled){ 
+        // TODO add an input buffer so it doesn't freak out when you hold a button.
         if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
             // Pause the game, I.e. set current state to pause
 
@@ -242,6 +244,12 @@ void Ball::checkEdge() {
     // ERROR ball seems to get stuck on screen edges infinitely flipping it's direction
 
     if (this->shape.position.x <= 0 || this->shape.position.x >= SCREEN_WIDTH) {
+        // ERROR this solution does not work
+        if (this->shape.position.x <= 0) {
+            this->shape.position.x = 1;
+        } else if (this->shape.position.x >= SCREEN_WIDTH) {
+            this->shape.position.x = SCREEN_WIDTH - (this->shape.size.x * 2);
+        }
         this->x_dir = -this->x_dir;
     }
 
