@@ -8,6 +8,9 @@
 #include "third_party/nugget/psyqo/primitives/rectangles.hh"
 #include "psyqo/simplepad.hh"
 
+// I believe I can use this for make dynamic strings
+#include "third_party/EASTL/include/EASTL/string.h"
+
 
 // For 320p
 #define SCREEN_WIDTH 320
@@ -224,6 +227,9 @@ void Player::getInput(psyqo::SimplePad::Pad pad) {
         if (pong.m_pad.isButtonPressed(pad, psyqo::SimplePad::Button::Start)) {
             // Pause the game, I.e. set current state to pause
 
+            // TODO maybe not possible for my skill level, but try to edit simplePad and 
+            // add a isButtonReleased option
+
             pongScene.curr_state = PongState::PAUSE;
         }
 
@@ -269,6 +275,9 @@ void Ball::move() {
 
 void Ball::debugPrintPosition() {
     // TODO print the ball's parameters
+
+    // Use EASTL (?) to dyanamically print the variables for the ball
+    // pong.m_font.print(pong.gpu(), , {{.x = 16, .y = 32}}, WHITE);
 }
     
 // TODO Create players
